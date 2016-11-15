@@ -20,17 +20,6 @@ class Category(models.Model):
 	def __str__(self):
 		return self.name
 
-	def get_data(self):
-		thumbnailer = get_thumbnailer(self.image)
-		thumbnail_options = {'crop': True, 'size': (80, 80)}
-		return {
-			'key': self.pk,
-			'name': self.name,
-			'description': self.description,
-			'image': thumbnailer.get_thumbnail(thumbnail_options).url,
-			'bundles': [bundle.get_data() for bundle in self.bundle_set.all()],
-		}
-
 
 class Bundle(models.Model):
 	category = models.ForeignKey(Category, related_name='bundles')
@@ -42,16 +31,6 @@ class Bundle(models.Model):
 
 	def __str__(self):
 		return self.name
-
-	def get_data(self):
-		thumbnailer = get_thumbnailer(self.image)
-		thumbnail_options = {'crop': True, 'size': (80, 80)}
-		return {
-			'key': self.pk,
-			'name': self.name,
-			'description': self.description,
-			'image': thumbnailer.get_thumbnail(thumbnail_options).url,
-		}
 
 
 @receiver(post_save, sender='auth.User')
