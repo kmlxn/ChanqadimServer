@@ -1,22 +1,27 @@
-from django.shortcuts import render
-from .models import Category
-from django.http import JsonResponse
-from .forms import BundleForm
+from django.contrib.auth.models import User
+from rest_framework import viewsets
+from .models import Category, Bundle
+from .serializers import CategorySerializer, BundleSerializer, UserSerializer
 
 
-def get_categories(request):
-    data = [category.get_data() for category in Category.objects.all()]
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
-    return JsonResponse(data, safe=False)
+
+class BundleViewSet(viewsets.ModelViewSet):
+    queryset = Bundle.objects.all()
+    serializer_class = BundleSerializer
 
 
-def handle_request_for_bundles(request, category_key):
-    if request.method == 'POST':
-        form = BundleForm(request.POST, request.FILES)
-        if form.is_valid():
-            category = Category.objects.get(pk=category_key)
-            bundle = form.save(commit=False)
-            bundle.category = category
-            bundle.save()
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
 
-    return JsonResponse({'ok': True})
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+
+        if pk == "current":
+            return self.request.user
+
+        return super(UserViewSet, self).get_object()

@@ -6,7 +6,7 @@ class CategoryAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 
 class BundleAdmin(admin.ModelAdmin):
-	fields = ['category', 'name', 'description', 'image']
+	fields = ['category', 'name', 'description', 'image', 'user']
 	list_display = ('name',)
 
 admin.site.register(models.Category, CategoryAdmin)

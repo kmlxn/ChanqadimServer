@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'easy_thumbnails',
+	'rest_framework',
+	'rest_framework.authtoken',
 	'backend',
 ]
 
@@ -129,4 +131,14 @@ THUMBNAIL_ALIASES = {
 	'': {
 		'thumb': {'size': (80, 80), 'crop': True},
 	},
+}
+
+
+REST_FRAMEWORK = {
+	'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+	'DEFAULT_AUTHENTICATION_CLASSES': (
+		'rest_framework.authentication.TokenAuthentication',
+		'rest_framework.authentication.SessionAuthentication',
+    ),
+    'PAGE_SIZE': 10,
 }
