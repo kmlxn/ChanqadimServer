@@ -33,6 +33,18 @@ class Bundle(models.Model):
 		return self.name
 
 
+class Product(models.Model):
+	bundle = models.ForeignKey(Bundle, related_name='products')
+	name = models.CharField(max_length=255)
+	description = models.TextField()
+	price = models.DecimalField(max_digits=12, decimal_places=3)
+	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True),
+		default=settings.MEDIA_ROOT+'/default.jpg')
+
+	def __str__(self):
+		return self.name
+
+
 @receiver(post_save, sender='auth.User')
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
