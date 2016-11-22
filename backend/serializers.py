@@ -18,8 +18,14 @@ class BundleSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'category', 'name', 'description', 'image', 'user', 'products')
 
 
+class BundleTileSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Bundle
+        fields = ('url', 'name', 'image')
+
+
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    bundles = BundleSerializer(many=True, read_only=True)
+    bundles = BundleTileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
