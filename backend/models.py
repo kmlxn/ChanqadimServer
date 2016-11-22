@@ -45,6 +45,12 @@ class Product(models.Model):
 		return self.name
 
 
+class UserProfile(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True),
+		default=settings.MEDIA_ROOT+'/default.jpg')
+
+
 @receiver(post_save, sender='auth.User')
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
