@@ -1,12 +1,19 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework.response import Response
 from .models import Category, Bundle, Product
-from .serializers import CategorySerializer, BundleSerializer, UserSerializer, ProductSerializer
+from .serializers import CategoryTileSerializer, CategorySerializer, BundleSerializer, UserSerializer, ProductSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategoryTileSerializer
+
+    def retrieve(self, request, pk=None):
+        category = get_object_or_404(self.queryset, pk=pk)
+        serializer = CategorySerializer(category, context={'request': request})
+        return Response(serializer.data)
 
 
 class BundleViewSet(viewsets.ModelViewSet):
