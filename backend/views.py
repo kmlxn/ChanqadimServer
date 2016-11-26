@@ -3,32 +3,32 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .models import Category, Bundle, Product
-from .serializers import CategoryTileSerializer, CategorySerializer, BundleSerializer, UserSerializer, ProductSerializer
+from . import serializers
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategoryTileSerializer
+    serializer_class = serializers.CategoryTile
 
     def retrieve(self, request, pk=None):
         category = get_object_or_404(self.queryset, pk=pk)
-        serializer = CategorySerializer(category, context={'request': request})
+        serializer = serializers.Category(category, context={'request': request})
         return Response(serializer.data)
 
 
 class BundleViewSet(viewsets.ModelViewSet):
     queryset = Bundle.objects.all()
-    serializer_class = BundleSerializer
+    serializer_class = serializers.Bundle
 
 
 class ProductsViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = serializers.Product
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+    serializer_class = serializers.User
 
     def get_object(self):
         pk = self.kwargs.get('pk')

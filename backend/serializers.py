@@ -1,57 +1,57 @@
-from django.contrib.auth.models import User
-from .models import Category, Bundle, Product, UserProfile
+from django.contrib.auth.models import User as DefaultUser
+from . import models
 from rest_framework import serializers
 
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
+class Product(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Product
+        model = models.Product
         fields = ('url', 'name', 'description', 'image', 'price')
 
 
-class UserBriefSerializer(serializers.HyperlinkedModelSerializer):
+class UserBrief(serializers.HyperlinkedModelSerializer):
     image = serializers.ImageField(source='profile.image')
 
     class Meta:
-        model = User
+        model = models.User
         fields = ('url', 'username', 'image')
 
 
-class BundleSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserBriefSerializer()
-    products = ProductSerializer(many=True, read_only=True)
+class Bundle(serializers.HyperlinkedModelSerializer):
+    user = UserBrief()
+    products = Product(many=True, read_only=True)
 
     class Meta:
-        model = Bundle
+        model = models.Bundle
         fields = ('url', 'category', 'name', 'description', 'image', 'user', 'products')
 
 
-class BundleTileSerializer(serializers.HyperlinkedModelSerializer):
+class BundleTile(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Bundle
+        model = models.Bundle
         fields = ('url', 'name', 'image')
 
 
-class CategoryTileSerializer(serializers.HyperlinkedModelSerializer):
+class CategoryTile(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Category
+        model = models.Category
         fields = ('url', 'name', 'image')
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
-    bundles = BundleTileSerializer(many=True, read_only=True)
+class Category(serializers.HyperlinkedModelSerializer):
+    bundles = BundleTile(many=True, read_only=True)
 
     class Meta:
-        model = Category
+        model = models.Category
         fields = ('url', 'name', 'description', 'image', 'bundles')
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    bundles = BundleSerializer(many=True, read_only=True)
+class User(serializers.HyperlinkedModelSerializer):
+    bundles = Bundle(many=True, read_only=True)
     image = serializers.ImageField(source='profile.image')
 
     class Meta:
-        model = User
+        model = DefaultUser
         fields = ('url', 'username', 'email', 'bundles', 'image')
 
     def create(self, validated_data):
