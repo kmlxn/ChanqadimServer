@@ -9,8 +9,16 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name', 'description', 'image', 'price')
 
 
+class UserBriefSerializer(serializers.HyperlinkedModelSerializer):
+    image = serializers.ImageField(source='profile.image')
+
+    class Meta:
+        model = User
+        fields = ('url', 'username', 'image')
+
+
 class BundleSerializer(serializers.HyperlinkedModelSerializer):
-    # category = serializers.HyperlinkedRelatedField(view_name='category-detail', read_only=True)
+    user = UserBriefSerializer()
     products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
