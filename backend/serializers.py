@@ -23,7 +23,7 @@ class Bundle(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Bundle
-        fields = ('url', 'category', 'name', 'description', 'image', 'user', 'products')
+        fields = ('url', 'name', 'description', 'image', 'user', 'products')
 
 
 class BundleTile(serializers.HyperlinkedModelSerializer):

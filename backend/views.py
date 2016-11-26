@@ -18,7 +18,12 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class BundleViewSet(viewsets.ModelViewSet):
     queryset = Bundle.objects.all()
-    serializer_class = serializers.Bundle
+    serializer_class = serializers.BundleTile
+
+    def retrieve(self, request, pk=None):
+        bundle = get_object_or_404(self.queryset, pk=pk)
+        serializer = serializers.Bundle(bundle, context={'request': request})
+        return Response(serializer.data)
 
 
 class ProductsViewSet(viewsets.ModelViewSet):
