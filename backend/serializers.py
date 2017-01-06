@@ -6,7 +6,7 @@ from rest_framework import serializers
 class Product(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = models.Product
-        fields = ('url', 'name', 'description', 'image', 'price')
+        fields = ('url', 'name', 'description', 'image', 'price', 'bundle')
 
 
 class UserBrief(serializers.HyperlinkedModelSerializer):
@@ -23,7 +23,13 @@ class Bundle(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = models.Bundle
-        fields = ('url', 'name', 'description', 'image', 'user', 'products')
+        fields = ('url', 'name', 'description', 'image', 'user', 'products', 'category')
+
+
+class BundleCreate(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Bundle
+        fields = ('url', 'name', 'description', 'image', 'category')
 
 
 class BundleTile(serializers.HyperlinkedModelSerializer):

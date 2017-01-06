@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Category, Bundle, Product
 from . import serializers
 
@@ -18,12 +19,17 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class BundleViewSet(viewsets.ModelViewSet):
     queryset = Bundle.objects.all()
-    serializer_class = serializers.BundleTile
+    parser_classes = (FormParser, MultiPartParser)
 
-    def retrieve(self, request, pk=None):
-        bundle = get_object_or_404(self.queryset, pk=pk)
-        serializer = serializers.Bundle(bundle, context={'request': request})
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.BundleTile
+        if self.action == 'create':
+            return serializers.BundleCreate
+        return serializers.Bundle
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ProductsViewSet(viewsets.ModelViewSet):
