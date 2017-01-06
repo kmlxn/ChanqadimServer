@@ -52,6 +52,7 @@ MIDDLEWARE_CLASSES = [
 	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'request_logging.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'chanqadimv1server.urls'
@@ -141,4 +142,27 @@ REST_FRAMEWORK = {
 		'rest_framework.authentication.SessionAuthentication',
     ),
     'PAGE_SIZE': 10,
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.response': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
 }
