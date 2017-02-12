@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import status
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import Category, Bundle, Product
@@ -42,10 +43,16 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = serializers.User
 
-    def update(self, request, pk=None):
-        if request.user.check_password(request.data.password):
-            request.user.set_password(request.data.newPassword)
-            serializers.User.save(request.data)
+    @detail_route(methods=['post'])
+    def edit(self, request, pk=None):
+        if pk != 'current':
+            return None
+        
+        if request.user.check_password(request.data['password']):
+            request.user.set_password(request.data['newPassword'])
+            request.user.save()
+            return Response('Edited user')
+
         return Response('wrong current password', status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def get_object(self):

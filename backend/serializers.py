@@ -1,7 +1,8 @@
+from django.core.exceptions import ValidationError
+from django.contrib.auth import password_validation
 from django.contrib.auth.models import User as DefaultUser
-from . import models
 from rest_framework import serializers
-
+from . import models
 
 class Product(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -75,3 +76,49 @@ class User(serializers.HyperlinkedModelSerializer):
         profile, created = Profile.objects.get_or_create(user=user, defaults=profile_data)
         if not created and profile_data is not None:
             super(UserSerializer, self).update(profile, profile_data)
+
+
+class EditUser(serializers.HyperlinkedModelSerializer):
+    image = serializers.ImageField(source='profile.image')
+
+    class Meta:
+        model = DefaultUser
+        fields = ('url', 'username', 'image')
+
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile', None)
+        user = super(UserSerializer, self).create(validated_data)
+        self.create_or_update_profile(user, profile_data)
+        return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', None)
+        self.create_or_update_profile(instance, profile_data)
+        return super(UserSerializer, self).update(instance, validated_data)
+
+    def create_or_update_profile(self, user, profile_data):
+        profile, created = Profile.objects.get_or_create(user=user, defaults=profile_data)
+        if not created and profile_data is not None:
+            super(UserSerializer, self).update(profile, profile_data)
+
+    # def validate(self, data):
+    #      # here data has all the fields which have validated values
+    #      # so we can create a User instance out of it
+    #      user = DefaultUser(**data)
+
+    #      # get the password from the data
+    #      password = data.get('password')
+
+    #      errors = dict() 
+    #      try:
+    #          # validate the password and catch the exception
+    #          password_validation.validate_password(password=password, user=User)
+
+    #      # the exception raised here is different than serializers.ValidationError
+    #      except ValidationError as e:
+    #          errors['password'] = list(e.messages)
+
+    #      if errors:
+    #          raise serializers.ValidationError(errors)
+
+    #      return super(EditUser, self).validate(data)
