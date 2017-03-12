@@ -47,13 +47,23 @@ class UserViewSet(viewsets.ModelViewSet):
     def edit(self, request, pk=None):
         if pk != 'current':
             return None
-        
-        if request.user.check_password(request.data['password']):
+
+        if not request.user.check_password(request.data['password']):
+            return Response('wrong current password', status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        if request.data.get('newPassword', default=None):
             request.user.set_password(request.data['newPassword'])
             request.user.save()
-            return Response('Edited user')
 
-        return Response('wrong current password', status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        serializer = serializers.EditUser(request.user, data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response('Edited user')
 
     def get_object(self):
         pk = self.kwargs.get('pk')

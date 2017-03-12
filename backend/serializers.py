@@ -87,38 +87,16 @@ class EditUser(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', None)
-        user = super(UserSerializer, self).create(validated_data)
+        user = super(EditUser, self).create(validated_data)
         self.create_or_update_profile(user, profile_data)
         return user
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', None)
         self.create_or_update_profile(instance, profile_data)
-        return super(UserSerializer, self).update(instance, validated_data)
+        return super(EditUser, self).update(instance, validated_data)
 
     def create_or_update_profile(self, user, profile_data):
-        profile, created = Profile.objects.get_or_create(user=user, defaults=profile_data)
+        profile, created = models.UserProfile.objects.get_or_create(user=user, defaults=profile_data)
         if not created and profile_data is not None:
-            super(UserSerializer, self).update(profile, profile_data)
-
-    # def validate(self, data):
-    #      # here data has all the fields which have validated values
-    #      # so we can create a User instance out of it
-    #      user = DefaultUser(**data)
-
-    #      # get the password from the data
-    #      password = data.get('password')
-
-    #      errors = dict() 
-    #      try:
-    #          # validate the password and catch the exception
-    #          password_validation.validate_password(password=password, user=User)
-
-    #      # the exception raised here is different than serializers.ValidationError
-    #      except ValidationError as e:
-    #          errors['password'] = list(e.messages)
-
-    #      if errors:
-    #          raise serializers.ValidationError(errors)
-
-    #      return super(EditUser, self).validate(data)
+            super(EditUser, self).update(profile, profile_data)
