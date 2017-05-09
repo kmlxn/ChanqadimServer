@@ -15,7 +15,7 @@ saved_file.connect(generate_aliases_global)
 class Category(models.Model):
 	name = models.CharField(max_length=255, unique=True)
 	description = models.TextField()
-	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True))
+	image = ThumbnailerImageField(resize_source=dict(size=(200, 200), sharpen=True))
 
 	def __str__(self):
 		return self.name
@@ -25,7 +25,7 @@ class Bundle(models.Model):
 	category = models.ForeignKey(Category, related_name='bundles')
 	name = models.CharField(max_length=255, unique=True)
 	description = models.TextField()
-	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True),
+	image = ThumbnailerImageField(resize_source=dict(size=(200, 200), sharpen=True),
 		default=settings.MEDIA_ROOT+'/default.jpg')
 	user = models.ForeignKey(User, related_name='bundles')
 
@@ -38,7 +38,7 @@ class Product(models.Model):
 	name = models.CharField(max_length=255)
 	description = models.TextField()
 	price = models.DecimalField(max_digits=12, decimal_places=3)
-	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True),
+	image = ThumbnailerImageField(resize_source=dict(size=(200, 200), sharpen=True),
 		default=settings.MEDIA_ROOT+'/default.jpg')
 
 	def __str__(self):
@@ -47,7 +47,7 @@ class Product(models.Model):
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-	image = ThumbnailerImageField(resize_source=dict(size=(80, 80), sharpen=True),
+	image = ThumbnailerImageField(resize_source=dict(size=(200, 200), sharpen=True),
 		default=settings.MEDIA_ROOT+'/default.jpg')
 
 
