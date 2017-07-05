@@ -54,7 +54,7 @@ class Category(serializers.HyperlinkedModelSerializer):
 
 
 class User(serializers.HyperlinkedModelSerializer):
-    bundles = Bundle(many=True, read_only=True)
+    bundles = BundleTile(many=True, read_only=True)
     image = serializers.ImageField(source='profile.image')
 
     class Meta:
